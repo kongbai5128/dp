@@ -1,5 +1,5 @@
-# AGENTS.md
-## 项目概述
+# README.md
+## 概述
 `hm-dianping` 是一个本地生活服务后端示例，核心能力覆盖用户登录、店铺检索、博客互动与优惠券秒杀下单。
 ## 开发命令
 - 安装依赖：`mvn clean compile`
