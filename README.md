@@ -31,5 +31,14 @@
 - kafka启动：
 - `cd D:\kafka_2.13-3.6.0 && .\bin\windows\zookeeper-server-start.bat .\config\zookeeper.properties`
 - `cd D:\kafka_2.13-3.6.0 && .\bin\windows\kafka-server-start.bat .\config\server.properties`
+- 创建消息队列
 - `cd D:\kafka_2.13-3.6.0 && .\bin\windows\kafka-topics.bat --create --bootstrap-server localhost:9092 --replication-factor 1 --partitions 1 --topic seckill-voucher-order`
 - `cd D:\kafka_2.13-3.6.0 && .\bin\windows\kafka-topics.bat --create --bootstrap-server localhost:9092 --replication-factor 1 --partitions 1 --topic cache-delete-retry`
+
+## 界面展示
+### 主页展示：
+![主页.png](img/主页.png)
+### 列表展示
+![列表.png](img/列表.png)
+### 详情展示
+![详情.png](img/详情.png)
