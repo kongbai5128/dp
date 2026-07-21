@@ -25,10 +25,11 @@
 
 ## 运行
 - 本地后端启动：`mvn spring-boot:run`
-- 前端启动：`cd src/main/resources/nginx/ && start .\nginx.exe`
-- mysql启动：`mysql.server start`
+- 前端启动：`cd .\src\main\resources\nginx-1.18.0 && start .\nginx.exe`
+- mysql启动：`net start mysql80`
 - redis启动：`redis-server`
 - kafka启动：
 - `cd D:\kafka_2.13-3.6.0 && .\bin\windows\zookeeper-server-start.bat .\config\zookeeper.properties`
 - `cd D:\kafka_2.13-3.6.0 && .\bin\windows\kafka-server-start.bat .\config\server.properties`
 - `cd D:\kafka_2.13-3.6.0 && .\bin\windows\kafka-topics.bat --create --bootstrap-server localhost:9092 --replication-factor 1 --partitions 1 --topic seckill-voucher-order`
+- `cd D:\kafka_2.13-3.6.0 && .\bin\windows\kafka-topics.bat --create --bootstrap-server localhost:9092 --replication-factor 1 --partitions 1 --topic cache-delete-retry`

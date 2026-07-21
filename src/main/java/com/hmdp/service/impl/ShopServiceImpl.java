@@ -15,9 +15,11 @@ import org.springframework.data.geo.GeoResults;
 import org.springframework.data.redis.connection.RedisGeoCommands;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.domain.geo.GeoReference;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import cn.hutool.json.JSONUtil;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.Resource;
 import java.util.*;
@@ -33,6 +35,7 @@ import static com.hmdp.utils.RedisConstants.*;
  * @author 虎哥
  * @since 2021-12-22
  */
+@Slf4j
 @Service
 public class ShopServiceImpl extends ServiceImpl<ShopMapper, Shop> implements IShopService {
 
@@ -42,6 +45,11 @@ public class ShopServiceImpl extends ServiceImpl<ShopMapper, Shop> implements IS
 
     @Resource
     private CacheClient cacheClient;
+
+    @Resource
+    private KafkaTemplate<String, Object> kafkaTemplate;
+
+    private static final String CACHE_DELETE_RETRY_TOPIC = "cache-delete-retry";
 
     @Override
     public Result queryById(Long id) {
@@ -73,8 +81,15 @@ public class ShopServiceImpl extends ServiceImpl<ShopMapper, Shop> implements IS
         }
         // 1.更新数据库
         updateById(shop);
-        // 2.删除缓存
-        stringRedisTemplate.delete(CACHE_SHOP_KEY + id);
+        // 2.删除缓存，若删除失败则发送MQ消息异步重试
+        String cacheKey = CACHE_SHOP_KEY + id;
+        try {
+            stringRedisTemplate.delete(cacheKey);
+        } catch (Exception e) {
+            log.error("删除缓存失败，key={}，发送MQ补偿重试", cacheKey, e);
+            // 发送消息到Kafka，由消费者异步重试删除
+            kafkaTemplate.send(CACHE_DELETE_RETRY_TOPIC, cacheKey);
+        }
         return Result.ok();
     }
 
